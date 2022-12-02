@@ -70,6 +70,40 @@ def gradient (theta,X,y):
     h=sigmoid(np.dot(X,theta))
     grad=np.dot(X.T,h-y)/X.shape[0]
     return grad
+    
+X_train=np.hstack((np.ones((X.shape[0],1)),X))
+theta=np.array([0,0,0])
+res=optimize.minimize(fun=cost,x0=theta,args=(X_train,y),method='Newton-CG',jac=gradient)
+print(res.fun)
+print(res.x)
+
+def plotDecisionBoundary(theta,X,y):
+    x_min,x_max=X[:,0].min()-1,X[:,0].max()+1
+    y_min,y_max=X[:,1].min()-1,X[:,1].max()+1
+    xx,yy=np.meshgrid(np.arange(x_min,x_max,0.1),np.arange(y_min,y_max,0.1))
+    X_plot=np.c_[xx.ravel(),yy.ravel()]
+    X_plot=np.hstack((np.ones((X_plot.shape[0],1)),X_plot))
+    y_plot=np.dot(X_plot,theta).reshape(xx.shape)
+    
+    plt.figure()
+    plt.scatter(X[y==1][:,0],X[y==1][:,1],label="Admitted")
+    plt.scatter(X[y==0][:,0],X[y==0][:,1],label="Not Admitted")
+    plt.contour(xx,yy,y_plot,levels=[0])
+    plt.xlabel("Exam 1 score")
+    plt.ylabel("Exam 2 score")
+    plt.legend()
+    plt.show()
+
+plotDecisionBoundary(res.x,X,y)
+
+prob=sigmoid(np.dot(np.array([1,45,85]),res.x))
+print(prob)
+
+def predict(theta,X):
+    X_train =np.hstack((np.ones((X.shape[0],1)),X))
+    prob=sigmoid(np.dot(X_train,theta))
+    return (prob>=0.5).astype(int)
+np.mean(predict(res.x,X)==y)
 */
 ```
 
@@ -78,6 +112,9 @@ def gradient (theta,X,y):
 ![Screenshot 2022-11-22 224725](https://user-images.githubusercontent.com/94288340/203379781-6c3d5b45-c925-4a85-95ad-1e4ea963154c.png)
 ![Screenshot 2022-11-22 224743](https://user-images.githubusercontent.com/94288340/203379807-b3d513fb-873a-4b7f-86e5-aa447c9af312.png)
 ![Screenshot 2022-11-22 224805](https://user-images.githubusercontent.com/94288340/203379844-1c9be06b-77ff-47b4-b52d-2543304efe7c.png)
+![Screenshot 2022-12-02 150831](https://user-images.githubusercontent.com/94288340/205263088-8f95b738-7646-43d3-81b4-b324e4dd3162.png)
+![Screenshot 2022-12-02 150858](https://user-images.githubusercontent.com/94288340/205263137-4b45b864-3e07-41f9-911a-660d8ae4adbd.png)
+![Screenshot 2022-12-02 150919](https://user-images.githubusercontent.com/94288340/205263170-a2edeb11-eb49-4a4d-9d19-6ec660832d4d.png)
 
 ## Result:
 Thus the program to implement the the Logistic Regression Using Gradient Descent is written and verified using python programming.
